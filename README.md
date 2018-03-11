@@ -7,4 +7,4 @@ Developed a pixel wise classifier to detect drivable road using fully convolutio
 
 For project report, please refer to: <br />
 
-http://cs-people.bu.edu/mzraghib/p3/p3.html
+http://htmlpreview.github.io/?https://github.com/mzraghib/Semantic-Segmentation/blob/master/p3.html
