@@ -1,0 +1,272 @@
+
+<html>
+<head>
+<title> CS585 Project Proposal P3: Muhammad Zuhayr Raghib  </title>
+<style>
+<!--
+body{
+font-family: 'Trebuchet MS', Verdana; 
+}
+p{
+font-family: 'Trebuchet MS', Times;
+margin: 10px 10px 15px 20px;
+}
+h3{
+margin: 5px;
+}
+h2{
+margin: 10px;
+}
+h1{
+margin: 10px 0px 0px 20px;
+}
+div.main-body{
+align:center;
+margin: 30px;
+}
+hr{
+margin:20px 0px 20px 0px;
+}
+-->
+</style>
+</head>
+
+<body>
+<center>
+<a href="http://www.bu.edu"><img border="0" src="http://www.cs.bu.edu/fac/betke/images/bu-logo.gif"
+width="119" height="120"></a>
+</center>
+
+<h1>Semantic Segmentation for Road Detection</h1>
+<p> 
+ CS 585 Project Proposal P3: - Muhammad Zuhayr Raghib <br>
+ <br>
+7th December, 2017
+</p>
+
+<div class="main-body">
+<hr>
+<h2> Problem Definition </h2>
+<p>
+
+Modern camera systems can produce high quality images at high rates at very low costs, allowing them to be placed in many commodity items ranging from mobile phones to surveillance systems and automotive vehicles [5]. <b>
+This increases the demand for systems that are able to understand this data.<b>
+</p>
+<p>
+
+The objective of the project is to take images of scenes taken from a dashcam of cars in real environments, and to classify each pixel in the image. <b>
+
+The classes are limited to being as ‘drivable road’ or ‘not drivable road’, however this is due to the nature of the training dataset used.<b>
+</p>
+<p>
+
+
+
+Convolutional networks by themselves, trained end-to-end, pixels-to-pixels, exceed the state-of-the-art in semantic segmentation [3].<b>
+
+Road detection is an area of critical importance in the area of autonomous driving. <b>
+While this project will only consider a single class 'i.e. road', this method can be applied to segment multiple classes as well. <b>
+
+<hr>
+<h2> Implementation </h2>
+
+<p>
+Tensorflow was used as a tool to develop the FCN architecture, and training was performed on the BU SCC cluster for training and executing the algorithm. The project was written in python, including the image preprocessing methods.
+
+
+</p>
+
+<h3> Approach </h3>
+<p>
+
+FCNs are convolutional networks where all of the layers are convolutional layers.<b>
+FCNs don’t have any of the fully-connected layers at the end, which are typically use for classification. Instead, FCNs use convolutional layers to classify each pixel in the image.<b>
+</p>
+<p>
+
+The final output in this case will have the same height and width as the input image, with 2 channels for the two classes of the project ‘drivable road’ and ‘not drivable road’.<b>
+
+</p>
+<p>
+
+The first approach was to develop an FCN from scratch.<b> 
+Training a deep neural network from scratch is often because of various reasons [2]. <b>
+One such reason is that a dataset of sufficient size is required. <b>
+
+The KITTI dataset is only 289 images. <b>This low
+
+To avoid larger training times, a similar approached to [1] was used, where a pre-trained VGG-16 network was downloaded and converted to a FCN.<b>
+</p>
+<p>
+
+
+
+The final layer was discarded and replaced by a 1x1 convolution layer. The depth was set to the channel dimension (i.e. 2 since only two classes are considered for the KITTI dataset).<b>
+To improve performance, skip connections were added. These are 1x1 convolutions of VGG layers 3 and 4, which are added element wise to <b>
+
+
+</p>
+<h3> Data Augmentation </h3>
+<p>
+
+To improve the performance of the classifier, the data was preprocessed randomly during each epoch.
+This was done in two ways:<b>
+</p>
+<p>
+
+
+1)	Random contrast changes were applied to simulate different lighting conditions. The aim was to improve the performance where the road segment includes shadows of trees or pavements of very similar color the road.<b>
+</p>
+<p>
+
+2)	Random images were flipped about the horizontal axis to simulate a new input not seen by the classifier from the test inputs. Because of the nature of the images, flipping about the horizontal axis was not performed.<b>
+</p>
+<p>
+
+
+</p>
+
+<hr>
+
+<h2> Training Data </h2>
+<p>
+The KITTI dataset was used for the project. This provides data with labels for each pixel. The data is shown below:
+</p>
+<table>
+<tbody><tr><td colspan=3><h3>Example input</h3></center></td></tr>
+<tr>
+<td> Example Training Image </td><td> Pixel-wise Labelled training image </td>
+</tr>
+
+<tr>
+  <td> <img src="imgs/um_000000.png"> </td>
+  <td> <img src="imgs/um_road_000000.png"> </td><br>
+</tr>
+</tbody></table>
+</p>
+
+
+
+
+
+<hr>
+<h2> Experiments </h2>
+<p>
+Initially the approach was to train the network with the entire dataset as a single tensor.  Because of the small size of the dataset, the approach was chosen as a starting point because of the simpler coding methods required. Needless to say, this approach failed as ‘out of memory’ error would always occur without fail, even on the BU shared cluster. <b>
+</p>
+<p>
+
+To solve this, the input was divided into batches of 5 images each and trained batch wise. The selection of the batch size was arbitrary. <b>
+The number of epochs, or loops for which the entire dataset was used from training was decided through experimentation. For values below 50, the results were very poor. The paper by Long et al [1] used a minimum of 175 epochs (or complete passes through the training dataset), which is why a value of 180 was used.<b>
+</p>
+
+
+
+
+
+
+<hr>
+<h2> Results</h2>
+<p>
+The following images show a few example test images(left) and the segmented output in green (right):
+</p>
+
+<p>
+<table>
+<tbody>
+<tr>
+
+  <td> <img src="imgs/result_3_uu_000019.png"> </td> 
+
+  <td> <img src="imgs/result_3_uu98.png"> </td>
+</tr>
+
+<tr>
+
+  <td> <img src="imgs/result1_um_000013.jpg"> </td> 
+
+  <td> <img src="imgs/result_1_um13.png"> </td>
+</tr> 
+<tr>
+  <td> <img src="imgs/result_2_um_000087.png"> </td> 
+  <td> <img src="imgs/result_2_um87.png"> </td>
+</tr> 
+
+</tbody></table>
+</p>
+
+
+
+
+
+<p>
+The following images show a few example results without preprocessing(left) and with preprocessing (right):
+</p>
+
+
+
+<p>
+<table>
+<tbody>
+<tr>
+
+  <td> <img src="imgs/wout_prepros1.png"> </td> 
+  <td> <img src="imgs/w_prepos1.png"> </td>
+</tr>
+
+
+<tr>
+  <td> <img src="imgs/wout_prepos3.png"> </td> 
+  <td> <img src="imgs/w_prepos3.png"> </td>
+</tr> 
+
+</tbody></table>
+</p>
+
+
+
+
+<hr>
+<h2> Discussion </h2>
+<p>
+The analysis of the results in this report is based on empirical observations. This is because the KITTI test dataset does not include ground truth information, that can be used to provide accuracy measurements in percentages or a confusion matrix.<b>
+</p>
+
+<p>
+
+The images in the results give a very good visual indication of the successfulness of the chosen method for semantic segmentation, with much roads being successfully detected in a majority of the test frames.<b>
+ Given more training data or perhaps a different dataset, and through more experimentation with the FCN architecture, it seems likely that this would be a more robust and reliable method for segmentation of drivable roads for ever changing environments that vehicles pass through on a daily basis, compared to simple thresholding methods. <b>
+ </p>
+<p>
+
+In fact, most modern approaches for semantic segmentation use FCN architectures as a blueprint [5].<b>
+However, the limitations of this method may arise in the actual real-time implementation on a vehicle. Since cars are not stationary objects, the framerate at which the classifier would have to operate would be very high. <b>
+</p>
+<p>
+
+Since for this project, the results data was collected in a single loop through the test data after training, (without saving the weights of the model) testing on single test images was not performed.<b>
+</p>
+<p>
+This is an area that can be explored with minor alterations to the code for this project, and with the availability of modern embedded controllers like the NVIDIA Jetson TK2, the implementation on hardware could also be tested and benchmarked.<b>
+
+</p>
+
+
+<hr>
+<h2> Credits and Bibliography </h2>
+<p>
+
+[1] - https://people.eecs.berkeley.edu/~jonlong/long_shelhamer_fcn.pdf<br>
+[2]- https://arxiv.org/pdf/1704.06857.pdf<br>
+[3] - http://www.cvlibs.net/datasets/kitti/eval_road.php<br>
+[4] - https://github.com/jeremy-shannon/CarND-Semantic-Segmentation<br>
+[5] - https://openreview.net/pdf?id=S1uHiFyyg <b>
+
+
+<hr>
+</div>
+</body>
+
+
+
+</html>
