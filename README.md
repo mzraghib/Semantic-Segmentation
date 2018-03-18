@@ -8,3 +8,8 @@ Developed a pixel wise classifier to detect drivable road using fully convolutio
 For project report, please refer to: <br />
 
 http://htmlpreview.github.io/?https://github.com/mzraghib/Semantic-Segmentation/blob/master/p3.html
+
+
+https://media.giphy.com/media/AFIOlDkWZzYPk7jZWz/giphy.gif
+
+![Alt Text](https://media.giphy.com/media/AFIOlDkWZzYPk7jZWz/giphy.gif)
